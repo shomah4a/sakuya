@@ -12,6 +12,7 @@ setuptools.setup(
     install_requires=[
         'sqlalchemy',
         'pygments',
+        'simplejson',
         ],
     author=pkg.__author__,
     license=pkg.__license__,
