@@ -1,8 +1,13 @@
 #-*- coding:utf-8 -*-
 
+import sys
+
+from java import lang
+
 import simplejson
 
-from sakuya.jython import utils, constants, walker
+from sakuya import constants
+from sakuya.jython import utils, walker
 
 
 def print_json(obj):
@@ -20,7 +25,6 @@ def dump_package(pkg, context):
 
 
 
-
 def get_bases(cls, context):
     u'''
     継承元を出力
@@ -30,14 +34,19 @@ def get_bases(cls, context):
 
 
 
-
 def dump_typename(typ):
     u'''
     型を出力
     '''
 
-    mod = typ.__module__
-    name = typ.__name__
+    if typ != lang.Class and typ.isArray():
+        com = typ.getComponentType()
+        mod = com.__module__
+        name = typ.getSimpleName()
+    else:
+        mod = typ.__module__
+        name = typ.__name__
+
 
     if mod == '__builtin__':
         return name
@@ -74,7 +83,8 @@ def dump_method(method, context):
                 'name': funcdata.name,
                 'fully_qualified': name,
                 'class': dump_typename(funcdata.getDeclaringClass()),
-                'parameters': parameters})
+                'parameters': parameters,
+                'rtype': rtype})
 
 
 

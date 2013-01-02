@@ -14,7 +14,7 @@ def get_path(mod):
 
 
 
-def run_jython(args):
+def run_jython(args, line_handler):
     u'''
     jython で動かす
     '''
@@ -30,7 +30,7 @@ def run_jython(args):
     p = subprocess.Popen(['jython', entry]+list(args), env=env, stdout=subprocess.PIPE)
 
     for line in p.stdout:
-        print line,
+        line_handler(line)
 
     retcode = p.wait()
 

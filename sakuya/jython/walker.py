@@ -4,7 +4,8 @@ import sys
 
 from java import lang
 
-from sakuya.jython import utils, constants
+from sakuya import constants
+from sakuya.jython import utils
 
 
 def is_special_name(name):
