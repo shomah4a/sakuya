@@ -16,12 +16,21 @@ def print_json(obj):
 
 
 
+def make_package_data(pkg, context):
+    u'''
+    パッケージ情報を生成
+    '''
+
+    return dict(type=constants.JAVA_PACKAGE,
+                name=pkg.__name__)
+
+
+
 def dump_package(pkg, context):
     u'''
     パッケージ情報を出力
     '''
-    print_json(dict(type=constants.JAVA_PACKAGE,
-                    name=pkg.__name__))
+    print_json(make_package_data(pkg, context))
 
 
 
@@ -55,21 +64,32 @@ def dump_typename(typ):
 
 
 
+
+def make_class_data(cls, context):
+    u'''
+    クラス情報を生成
+    '''
+
+    return dict(type=constants.JAVA_CLASS,
+                name=dump_typename(cls),
+                bases=get_bases(cls, context))
+
+
 def dump_class(cls, context):
     u'''
     クラス情報を出力
     '''
 
-    print_json(dict(type=constants.JAVA_CLASS,
-                    name=dump_typename(cls),
-                    bases=get_bases(cls, context)))
+    print_json(make_class_data(cls, context))
 
 
 
-def dump_method(method, context):
+
+def make_method_data(method, context):
     u'''
-    メソッドを出力
+    メソッド情報を生成
     '''
+
 
     funcdata = method.argslist[0].data
 
@@ -79,12 +99,21 @@ def dump_method(method, context):
 
     parameters = [dump_typename(x) for x in funcdata.parameterTypes]
 
-    print_json({'type': constants.JAVA_METHOD,
-                'name': funcdata.name,
-                'fully_qualified': name,
-                'class': dump_typename(funcdata.getDeclaringClass()),
-                'parameters': parameters,
-                'rtype': rtype})
+    return {'type': constants.JAVA_METHOD,
+            'name': funcdata.name,
+            'fully_qualified': name,
+            'class': dump_typename(funcdata.getDeclaringClass()),
+            'parameters': parameters,
+            'rtype': rtype}
+
+
+
+def dump_method(method, context):
+    u'''
+    メソッドを出力
+    '''
+
+    return make_method_data(method, context)
 
 
 

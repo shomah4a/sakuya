@@ -19,9 +19,9 @@ setuptools.setup(
     url='https://github.com/shomah4a/implicit',
     description='This module provides scala implicit conversion and implicit parameter mechanism for python.',
     long_description=pkg.__doc__,
-    entry_points=dict(
-        console_scripts=['sakuya=sakuya:main'],
-        ),
+    entry_points={
+        'console_scripts':['sakuya=sakuya:main'],
+        },
     classifiers='''
 Programming Language :: Python
 Development Status :: 2 - Pre-Alpha
