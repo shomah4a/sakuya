@@ -17,12 +17,13 @@ def main():
     from .model import functions
     from . import jython
 
-    # jython.run_jython(['java.util'], functions.create_from_json)
+    # jython.run_jython(['java'], functions.create_from_json)
 
     with session.Session() as sess:
+        pass
 
-        functions.search_by_type(sess, 'void', ['Object[]'])
-        functions.search_by_type(sess, 'void', [])
+        # functions.search_by_type(sess, 'void', ['List', 'Object'])
+        # functions.search_by_type(sess, 'void', [])
 
 
 

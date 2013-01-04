@@ -1,14 +1,31 @@
 #-*- coding:utf-8 -*-
 
-
-def hello(environ, start_response):
-
-    start_response('200 OK', [('Content-Type', 'text/plain')])
-
-    return ['Hello']
+from . import application
 
 
 
 def app_factory(*argl, **argd):
 
-    return hello
+    return application.make_application()
+
+
+
+def main():
+
+    from wsgiref import simple_server
+
+    from sakuya.model import session
+
+    session.initialize('sqlite:///data.db')
+
+    app = app_factory()
+
+    simple_server.make_server('', 8080, app).serve_forever()
+
+
+
+
+if __name__ == '__main__':
+
+    main()
+

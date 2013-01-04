@@ -90,11 +90,14 @@ def handle_object(obj, handlers, context, progress):
     オプジェクトの属性を列挙する感じ
     '''
 
-    if obj in progress:
+    try:
+        if obj in progress:
+            return
+    except lang.NullPointerException, e:
+        # print >> sys.stderr, u'NullPointerException in ', obj
         return
 
     progress.add(obj)
-
 
     if utils.is_javapackage(obj):
         handle_package(obj, handlers, context, progress)

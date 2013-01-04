@@ -1,0 +1,56 @@
+<!--*- mode:xml -*-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML Basic 1.0//EN" "http://www.w3.org/TR/xhtml-basic/xhtml-basic10.dtd">
+
+<metal:block define-macro="main">
+
+  <metal:global use-macro="here/global/macros/global-defines" />
+
+  <!-- Plone の main_template っぽく -->
+  <html lang="ja"
+        xmlns:tal="http://xml.zope.org/namespaces/tal"
+        xmlns:metal="http://xml.zope.org/namespaces/metal"
+        xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+
+    <head>
+
+      <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+
+      <title>
+        <metal:block metal:define-slot="title" />
+        - Java Method Searcher
+      </title>
+
+      <metal:block define-slot="css" />
+      <metal:block define-slot="js" />
+      <metal:block define-slot="meta" />
+
+      <style type="text/css">
+
+        .package
+        {
+          vertical-align: super;
+          font-size: 80%;
+        }
+
+        .type
+        {
+        }
+
+        .method
+        {
+        }
+
+        .arg
+        {
+        }
+
+      </style>
+
+    </head>
+
+    <body metal:define-slot="body" />
+
+  </html>
+
+</metal:block>
+

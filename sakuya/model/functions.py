@@ -1,9 +1,6 @@
 #-*- coding: utf-8 -*-
 
-import json
-
-
-from sqlalchemy.sql import functions
+from sqlalchemy.sql import functions, func
 from sqlalchemy import sql
 
 from sakuya import constants
@@ -95,12 +92,10 @@ def create_method(sess, name, fqname, cls, rtype, parameters):
 
 
 
-def create_from_json(jsonstr):
+def create_from_json(data):
     u'''
     JSON から登録
     '''
-
-    data = json.loads(jsonstr)
 
     typ = data.get('type')
 
@@ -157,22 +152,52 @@ def _search_with_args(sess, ret_type, parameters):
 
     where = sql.and_(method.c.argcount == len(parameters),
                      rtype.c.name == ret_type,
-                     *[make_param_query(idx, param)
-                       for idx, param in enumerate(parameters)])
+                     sql.or_(*[make_param_query(idx, param)
+                               for idx, param in enumerate(parameters)]))
 
-    sel = sql.select([method.c.id, method.c.name, method.c.fqname],
-                     where, joined).group_by(method.c.id).having(functions.count() == len(parameters))
 
-    results = sess.execute(sel).fetchall()
+    # XXX: sqlite 以外に対応できない
+    # func.group_concat(methodargs.order + ':' + atype.c.name)
+    # とやりたいところだけど、 SQL がまともに生成されなかったので諦めた
 
-    for x in results:
-        print x[2]
+    tmpl = '''group_concat(methodargs.`order` || ':' || {0}) as {1}'''
+
+    args = tmpl.format(atype.c.name, 'name')
+    fqargs = tmpl.format(atype.c.fqname, 'fqname')
+
+    columns = [method.c.id, method.c.name, method.c.fqname, method.c.return_type,
+               rtype.c.name, rtype.c.fqname, args, fqargs]
+
+    query = sql.select(columns, where, joined, use_labels=True)
+    query = query.group_by(method.c.id).having(functions.count() == len(parameters))
+
+    results = sess.execute(query)
+
+
+    def make_args(names, fqnames):
+        names = dict(x.split(':') for x in  names.split(','))
+        fqnames = dict(x.split(':') for x in  fqnames.split(','))
+
+        return [dict(name=names[idx],
+                     fully_qualified=fqnames[idx])
+                for idx in map(str, range(len(parameters)))]
+
+
+    def make_dict(r):
+        return dict(name=r[method.c.name],
+                    fully_qualified=r[method.c.fqname],
+                    return_type=dict(name=r[rtype.c.name],
+                                     fully_qualified=r[rtype.c.fqname]),
+                    args=make_args(r['name'], r['fqname']))
+
+
+    return [make_dict(x) for x in results]
 
 
 
 def _search_without_args(sess, ret_type):
     u'''
-    引数の型だけで検索
+    引数がない関数を検索
     '''
 
     u'''
@@ -192,14 +217,21 @@ def _search_without_args(sess, ret_type):
     where = sql.and_(method.c.argcount == 0,
                      rtype.c.name == ret_type)
 
-    sel = sql.select([method.c.id, method.c.name, method.c.fqname],
-                     where, joined)
+    sel = sql.select([method.c.id, method.c.name, method.c.fqname, rtype.c.name, rtype.c.fqname],
+                     where, joined, use_labels=True)
 
-    results = sess.execute(sel).fetchall()
+    results = sess.execute(sel)
 
-    for x in results:
-        print x[2]
 
+    def make_dict(r):
+        return dict(name=r[method.c.name],
+                    fully_qualified=r[method.c.fqname],
+                    return_type=dict(name=r[rtype.c.name],
+                                     fully_qualified=r[rtype.c.fqname]),
+                    args=[])
+
+
+    return [make_dict(x) for x in results]
 
 
 

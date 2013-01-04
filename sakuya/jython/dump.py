@@ -113,7 +113,7 @@ def dump_method(method, context):
     メソッドを出力
     '''
 
-    return make_method_data(method, context)
+    print_json(make_method_data(method, context))
 
 
 

@@ -1,0 +1,8 @@
+<!--*- coding:utf-8 mode:html -*-->
+
+<metal:block define-macro="global-defines">
+
+  <tal:global define="global sakuya modules/sakuya;
+                      global f python: modules['sakuya.web.template.utils']" />
+
+</metal:block>

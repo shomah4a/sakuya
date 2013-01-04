@@ -30,7 +30,17 @@ def run_jython(args, line_handler):
     p = subprocess.Popen(['jython', entry]+list(args), env=env, stdout=subprocess.PIPE)
 
     for line in p.stdout:
-        line_handler(line)
+        print line
+
+        try:
+            data = simplejson.loads(line)
+        except ValueError, e:
+            print >> sys.stderr, 'invalud line data', repr(data)
+            import traceback
+            traceback.print_exc()
+            continue
+
+        line_handler(data)
 
     retcode = p.wait()
 

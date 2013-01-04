@@ -22,9 +22,9 @@ class Type(Base):
     __table_args__ = (
         al.UniqueConstraint('fqname', name='uc_fqname'),)
 
-    id = decl.Column(al.Integer, primary_key=True, autoincrement=True)
-    name = decl.Column(al.Unicode(255), nullable=False)
-    fqname = decl.Column(al.Unicode(1024), nullable=False)
+    id = al.Column(al.Integer, primary_key=True, autoincrement=True)
+    name = al.Column(al.Unicode(255), nullable=False)
+    fqname = al.Column(al.Unicode(1024), nullable=False)
 
 
 
@@ -40,13 +40,13 @@ class Method(Base):
 
     __tablename__ = 'methods'
 
-    id = decl.Column(al.Integer, primary_key=True, autoincrement=True)
-    signature = decl.Column(al.Unicode(512), nullable=False)
-    name = decl.Column(al.Unicode(255), nullable=False)
-    fqname = decl.Column(al.Unicode(1024), nullable=False)
-    class_ = decl.Column(al.Integer, al.ForeignKey('types.id'), nullable=False)
-    return_type = decl.Column(al.Integer, al.ForeignKey('types.id'), nullable=False)
-    argcount = decl.Column(al.Integer)
+    id = al.Column(al.Integer, primary_key=True, autoincrement=True)
+    signature = al.Column(al.Unicode(512), nullable=False)
+    name = al.Column(al.Unicode(255), nullable=False)
+    fqname = al.Column(al.Unicode(1024), nullable=False)
+    class_ = al.Column(al.Integer, al.ForeignKey('types.id'), nullable=False)
+    return_type = al.Column(al.Integer, al.ForeignKey('types.id'), nullable=False)
+    argcount = al.Column(al.Integer)
 
 
 
@@ -61,9 +61,9 @@ class MethodArg(Base):
 
     __tablename__ = 'methodargs'
 
-    method_id = decl.Column(al.Integer, al.ForeignKey('methods.id'), primary_key=True)
-    order = decl.Column(al.Integer, primary_key=True)
-    type = decl.Column(al.Integer, al.ForeignKey('types.id'), nullable=False)
+    method_id = al.Column(al.Integer, al.ForeignKey('methods.id'), primary_key=True)
+    order = al.Column(al.Integer, primary_key=True)
+    type = al.Column(al.Integer, al.ForeignKey('types.id'), nullable=False)
 
 
 
