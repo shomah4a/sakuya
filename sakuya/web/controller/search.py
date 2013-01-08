@@ -13,7 +13,17 @@ def get(req):
 
     fmt = req.GET.get('format')
     rtype = req.GET.get('return')
-    args = req.GET.getall('arg')
+    args = req.GET.get('args')
+
+    if args is None:
+        args = []
+    else:
+        args = args.strip()
+
+        if not args:
+            args = []
+        else:
+            args = [x.strip() for x in args.split(',')]
 
     if not rtype:
         result = []
@@ -30,27 +40,8 @@ def get(req):
                                         args=', '.join(args)))
 
 
-def post(req):
-
-    rtype = req.POST.get('return', '')
-    args = req.POST.get('args', '')
-
-    params = {'return': rtype}
-
-    if args:
-        arglist = [x.strip() for x in args.split(',')]
-        params['arg'] = arglist
-
-    return utils.redirect_to(req.path_url, params)
-
-
-
-
-
-
-
 def make_app():
 
-    return utils.method_map(dict(GET=get, POST=post))
+    return utils.method_map(dict(GET=get))
 
 

@@ -10,6 +10,7 @@ from sakuya import constants
 from sakuya.jython import utils, walker
 
 
+
 def print_json(obj):
 
     print simplejson.dumps(obj)
@@ -70,9 +71,17 @@ def make_class_data(cls, context):
     クラス情報を生成
     '''
 
-    return dict(type=constants.JAVA_CLASS,
-                name=dump_typename(cls),
-                bases=get_bases(cls, context))
+    r = dict(type=constants.JAVA_CLASS,
+             name=dump_typename(cls),
+             bases=get_bases(cls, context))
+
+    try:
+        r['modifiers'] = cls.getModifiers()
+    except TypeError, e:
+        r['modifiers'] = 0
+
+    return r
+
 
 
 def dump_class(cls, context):
@@ -104,7 +113,8 @@ def make_method_data(method, context):
             'fully_qualified': name,
             'class': dump_typename(funcdata.getDeclaringClass()),
             'parameters': parameters,
-            'rtype': rtype}
+            'rtype': rtype,
+            'modifiers': funcdata.getModifiers()}
 
 
 

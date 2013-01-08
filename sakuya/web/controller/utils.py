@@ -5,6 +5,8 @@ import json
 
 import webob
 
+from . import errors
+
 
 def make_json_resp(data):
     u'''
@@ -43,10 +45,7 @@ def method_map(d):
         if m in d:
             return d[m](req)
 
-        res = webob.Response()
+        return errors.method_not_allowed(req)
 
-        res.status = '404 NotFound'
-
-        return res
 
     return app

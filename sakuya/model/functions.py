@@ -46,7 +46,7 @@ def make_signature(fqname, parameters, rtype):
 
 
 
-def create_method(sess, name, fqname, cls, rtype, parameters):
+def create_method(sess, name, fqname, cls, rtype, parameters, modifiers):
     u'''
     メソッドと引数情報を登録
     '''
@@ -65,7 +65,8 @@ def create_method(sess, name, fqname, cls, rtype, parameters):
                              signature=signature,
                              class_=cls_id,
                              return_type=rtype_id,
-                             argcount=len(parameters))
+                             argcount=len(parameters),
+                             modifiers=modifiers)
 
         sess.add(meth)
 
@@ -107,9 +108,10 @@ def create_from_json(data):
     cls = data.get('class')
     parameters = data.get('parameters')
     rtype = data.get('rtype')
+    modifiers = data.get('modifiers')
 
     with session.Session() as sess:
-        create_method(sess, name, fqname, cls, rtype, parameters)
+        create_method(sess, name, fqname, cls, rtype, parameters, modifiers)
 
 
 
@@ -147,6 +149,9 @@ def _search_with_args(sess, ret_type, parameters):
 
     def make_param_query(idx, param):
 
+        if param == '*':
+            return marg.c.order == idx
+
         return sql.and_(marg.c.order == idx,
                         atype.c.name == param)
 
@@ -165,7 +170,7 @@ def _search_with_args(sess, ret_type, parameters):
     args = tmpl.format(atype.c.name, 'name')
     fqargs = tmpl.format(atype.c.fqname, 'fqname')
 
-    columns = [method.c.id, method.c.name, method.c.fqname, method.c.return_type,
+    columns = [method.c.id, method.c.name, method.c.fqname, method.c.return_type, method.c.modifiers,
                rtype.c.name, rtype.c.fqname, args, fqargs]
 
     query = sql.select(columns, where, joined, use_labels=True)
@@ -188,7 +193,8 @@ def _search_with_args(sess, ret_type, parameters):
                     fully_qualified=r[method.c.fqname],
                     return_type=dict(name=r[rtype.c.name],
                                      fully_qualified=r[rtype.c.fqname]),
-                    args=make_args(r['name'], r['fqname']))
+                    args=make_args(r['name'], r['fqname']),
+                    modifiers=r[method.c.modifiers])
 
 
     return [make_dict(x) for x in results]
@@ -217,7 +223,8 @@ def _search_without_args(sess, ret_type):
     where = sql.and_(method.c.argcount == 0,
                      rtype.c.name == ret_type)
 
-    sel = sql.select([method.c.id, method.c.name, method.c.fqname, rtype.c.name, rtype.c.fqname],
+    sel = sql.select([method.c.id, method.c.name, method.c.fqname, method.c.modifiers,
+                      rtype.c.name, rtype.c.fqname],
                      where, joined, use_labels=True)
 
     results = sess.execute(sel)
@@ -228,7 +235,8 @@ def _search_without_args(sess, ret_type):
                     fully_qualified=r[method.c.fqname],
                     return_type=dict(name=r[rtype.c.name],
                                      fully_qualified=r[rtype.c.fqname]),
-                    args=[])
+                    args=[],
+                    modifiers=r[method.c.modifiers])
 
 
     return [make_dict(x) for x in results]

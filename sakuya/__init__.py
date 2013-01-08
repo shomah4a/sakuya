@@ -17,7 +17,7 @@ def main():
     from .model import functions
     from . import jython
 
-    # jython.run_jython(['java'], functions.create_from_json)
+    jython.run_jython(['java'], functions.create_from_json)
 
     with session.Session() as sess:
         pass

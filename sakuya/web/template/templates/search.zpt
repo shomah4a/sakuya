@@ -7,7 +7,7 @@
     <h1>Java Method Searcher</h1>
 
     <form tal:attributes="action context/request/url"
-          method="POST">
+          method="GET">
       <dl>
         <dt>Return Type</dt>
         <dd>
@@ -30,11 +30,17 @@
 
       <table border="1">
         <tr>
+          <th>Modifiers</th>
           <th>Return Type</th>
           <th>Method Name</th>
           <th>Arguments</th>
         </tr>
         <tr tal:repeat="result context/results">
+          <td>
+            <tal:block define="modifiers result/modifiers">
+              <metal:block use-macro="here/modifiers/macros/modifiers" />
+            </tal:block>
+          </td>
           <td>
             <span class="package"
                   tal:content="python: f.get_package(result['return_type']['fully_qualified'])" />

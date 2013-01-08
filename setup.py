@@ -15,7 +15,7 @@ setuptools.setup(
         'simplejson',
         'WebOb',
         'WebDispatch',
-        'zope.pagetemplate'
+        'zope.pagetemplate',
         ],
     author=pkg.__author__,
     license=pkg.__license__,

@@ -47,6 +47,7 @@ class Method(Base):
     class_ = al.Column(al.Integer, al.ForeignKey('types.id'), nullable=False)
     return_type = al.Column(al.Integer, al.ForeignKey('types.id'), nullable=False)
     argcount = al.Column(al.Integer)
+    modifiers = al.Column(al.Integer, nullable=False)
 
 
 
@@ -64,8 +65,5 @@ class MethodArg(Base):
     method_id = al.Column(al.Integer, al.ForeignKey('methods.id'), primary_key=True)
     order = al.Column(al.Integer, primary_key=True)
     type = al.Column(al.Integer, al.ForeignKey('types.id'), nullable=False)
-
-
-
 
 

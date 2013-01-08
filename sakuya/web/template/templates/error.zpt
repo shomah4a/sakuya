@@ -1,0 +1,11 @@
+<!--*- mode:xml -*-->
+<html metal:use-macro="here/main/macros/main">
+  <metal:head fill-slot="title"><tal:block content="context/title" /></metal:head>
+
+  <body metal:fill-slot="body">
+
+    <h1>At <tal:block content="python: context.request.script_name + context.request.path_info" /></h1>
+    <h2 tal:content="python: context.message.format(**context)" />
+
+  </body>
+</html>

@@ -1,0 +1,20 @@
+<!--*- coding:utf-8 mode:html -*-->
+
+<metal:block define-macro="modifiers">
+
+  <span class="modifiers">
+    <span tal:condition="python: modifiers &amp; 1" class="modifier public">public</span>
+    <span tal:condition="python: modifiers &amp; 2" class="modifier private">private</span>
+    <span tal:condition="python: modifiers &amp; 4" class="modifier protected">protected</span>
+    <span tal:condition="python: modifiers &amp; 8" class="modifier static">static</span>
+    <span tal:condition="python: modifiers &amp; 16" class="modifier final">final</span>
+    <span tal:condition="python: modifiers &amp; 32" class="modifier synchronized">synchronized</span>
+    <span tal:condition="python: modifiers &amp; 64" class="modifier volatile">volatile</span>
+    <span tal:condition="python: modifiers &amp; 128" class="modifier transient">transient</span>
+    <span tal:condition="python: modifiers &amp; 256" class="modifier native">native</span>
+    <span tal:condition="python: modifiers &amp; 512" class="modifier interface">interface</span>
+    <span tal:condition="python: modifiers &amp; 1024" class="modifier abstract">abstract</span>
+    <span tal:condition="python: modifiers &amp; 2048" class="modifier strict">strict</span>
+  </span>
+
+</metal:block>
