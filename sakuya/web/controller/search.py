@@ -6,6 +6,11 @@ from sakuya.model import session, functions
 from sakuya.web.template import zpt
 
 
+def is_empty(obj):
+
+    return obj is None or not obj.strip()
+
+
 def get(req):
     u'''
     メソッド探して返す
@@ -15,7 +20,7 @@ def get(req):
     rtype = req.GET.get('return')
     args = req.GET.get('args')
 
-    if args is None:
+    if is_empty(args):
         args = []
     else:
         args = args.strip()
@@ -25,7 +30,11 @@ def get(req):
         else:
             args = [x.strip() for x in args.split(',')]
 
-    if not rtype:
+
+    if rtype is not None:
+        rtype = rtype.strip()
+
+    if is_empty(rtype) and not args:
         result = []
     else:
         with session.Session() as sess:

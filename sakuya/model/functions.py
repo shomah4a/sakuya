@@ -155,16 +155,21 @@ def _search_with_args(sess, ret_type, parameters):
         return sql.and_(marg.c.order == idx,
                         atype.c.name == param)
 
-    where = sql.and_(method.c.argcount == len(parameters),
-                     rtype.c.name == ret_type,
-                     sql.or_(*[make_param_query(idx, param)
-                               for idx, param in enumerate(parameters)]))
+    argquery = sql.or_(*[make_param_query(idx, param)
+                         for idx, param in enumerate(parameters)])
+
+    if ret_type:
+        where = sql.and_(method.c.argcount == len(parameters),
+                         rtype.c.name == ret_type,
+                         argquery)
+    else:
+        where = sql.and_(method.c.argcount == len(parameters),
+                         argquery)
 
 
     # XXX: sqlite 以外に対応できない
     # func.group_concat(methodargs.order + ':' + atype.c.name)
     # とやりたいところだけど、 SQL がまともに生成されなかったので諦めた
-
     tmpl = '''group_concat(methodargs.`order` || ':' || {0}) as {1}'''
 
     args = tmpl.format(atype.c.name, 'name')
@@ -174,7 +179,7 @@ def _search_with_args(sess, ret_type, parameters):
                rtype.c.name, rtype.c.fqname, args, fqargs]
 
     query = sql.select(columns, where, joined, use_labels=True)
-    query = query.group_by(method.c.id).having(functions.count() == len(parameters))
+    query = query.group_by(method.c.id).having(functions.count() == len(parameters)).order_by(method.c.fqname)
 
     results = sess.execute(query)
 
@@ -225,7 +230,7 @@ def _search_without_args(sess, ret_type):
 
     sel = sql.select([method.c.id, method.c.name, method.c.fqname, method.c.modifiers,
                       rtype.c.name, rtype.c.fqname],
-                     where, joined, use_labels=True)
+                     where, joined, use_labels=True).order_by(method.c.fqname)
 
     results = sess.execute(sel)
 
@@ -247,6 +252,9 @@ def search_by_type(sess, ret_type, parameters):
     u'''
     型で検索
     '''
+
+    if not ret_type and not parameters:
+        return []
 
     if parameters:
         return _search_with_args(sess, ret_type, parameters)
