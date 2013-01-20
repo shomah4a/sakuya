@@ -19,8 +19,8 @@ setuptools.setup(
         ],
     author=pkg.__author__,
     license=pkg.__license__,
-    url='https://github.com/shomah4a/implicit',
-    description='This module provides scala implicit conversion and implicit parameter mechanism for python.',
+    url='https://github.com/shomah4a/sakuya',
+    description=u'木花之佐久夜毘売, the goddess who appears in Japanese mythology.',
     long_description=pkg.__doc__,
     entry_points={
         'console_scripts':['sakuya=sakuya.cui:main',
