@@ -24,7 +24,8 @@ setuptools.setup(
     long_description=pkg.__doc__,
     entry_points={
         'console_scripts':['sakuya=sakuya.cui:main',
-                           'serve=sakuya.web:main'],
+                           'serve=sakuya.web:main',
+                           'sakuya_build=sakuya:main'],
         },
     classifiers='''
 Programming Language :: Python
