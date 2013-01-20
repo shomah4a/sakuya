@@ -11,13 +11,15 @@
       <dl>
         <dt>Return Type</dt>
         <dd>
-          <input name="return" type="text"
-                 tal:attributes="value context/return_type" />
+          <div><input name="return" type="text"
+                 tal:attributes="value context/return_type" /></div>
+          <div class="help">ex: void</div>
         </dd>
         <dt>Argument Types</dt>
         <dd>
-          <input name="args" type="text"
-                 tal:attributes="value context/args" />
+          <div><input name="args" type="text"
+                 tal:attributes="value context/args" /></div>
+          <div class="help">ex: List, String, *</div>
         </dd>
       </dl>
 

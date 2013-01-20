@@ -261,3 +261,18 @@ def search_by_type(sess, ret_type, parameters):
     return _search_without_args(sess, ret_type)
 
 
+
+
+def map_modifiers(modifiers):
+    u'''
+    public とか static とかに変換
+    '''
+
+    ret = []
+
+    for mask, name in constants.MODIFIERS:
+
+        if modifiers & mask:
+            ret.append(name)
+
+    return ret
